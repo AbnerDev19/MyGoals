@@ -1,0 +1,99 @@
+name: Build MyGoals APK
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 1) Testes e verificações. Se falhar, o APK nem é compilado.
+  test:
+    name: Testes e verificações
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install test dependencies
+        run: npm ci
+
+      - name: Verificar XML do Android (Manifest e recursos)
+        run: python3 scripts/check_manifest.py
+
+      - name: Verificações estáticas da interface web
+        run: node scripts/static-check.js
+
+      - name: Testes automatizados
+        run: npm test
+
+  # 2) Compilação do APK de depuração.
+  build-apk:
+    name: Compile Android APK
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.9'
+          cache-provider: basic
+
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Lint e build do APK de depuração
+        run: gradle --no-daemon --stacktrace clean :app:lintDebug :app:assembleDebug
+
+      - name: Nomear o APK com versão e número da execução
+        id: name
+        run: |
+          VERSION=$(grep -oP "versionName '\K[^']+" app/build.gradle)
+          NAME="MyGoals-v${VERSION}-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}-debug"
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk "dist/${NAME}.apk"
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.name.outputs.name }}
+          path: dist/${{ steps.name.outputs.name }}.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+          if-no-files-found: ignore
+          retention-days: 7
