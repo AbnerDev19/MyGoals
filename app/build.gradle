@@ -1,0 +1,35 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.abner.mygoals'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.abner.mygoals'
+        minSdk 23
+        targetSdk 34
+        versionCode 3
+        versionName '3.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // Relatório de lint é gerado e publicado pelo workflow; não bloqueia o build
+    // para não falhar por avisos de estilo (ex.: ícone sem versão monocromática).
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}

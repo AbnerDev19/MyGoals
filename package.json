@@ -1,0 +1,12 @@
+{
+  "name": "mygoals-web-tests",
+  "private": true,
+  "description": "Testes automatizados da interface web do MyGoals (somente desenvolvimento; o app não usa Node em produção).",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "check": "node scripts/static-check.js"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
