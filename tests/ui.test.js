@@ -137,7 +137,7 @@ test('tela Jornada com dados de exemplo: missões, conquistas bloqueadas com cri
   assert.match(a.text(), /XP restantes/);
   assert.ok(a.$$('.mission').length >= 6);
   a.clickA('jtab', '[data-v="conq"]'); assert.ok(a.$$('.badge-card.locked').length > 0); assert.match(a.$('.badge-card.locked').textContent, /Bloqueada/);
-  a.clickA('jtab', '[data-v="evo"]'); assert.ok(a.$('.heat'));
+  a.clickA('jtab', '[data-v="evo"]'); assert.ok(a.$('.gh-cells i'));
   assert.deepEqual(a.errors, []);
 });
 test('acessibilidade básica: botões de ícone têm nome, abas têm aria-current, HTML sem ids duplicados', () => {

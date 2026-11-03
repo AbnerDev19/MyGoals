@@ -8,7 +8,7 @@ app/src/main/java/.../MainActivity.java   WebView restrito, ponte mínima, selet
 app/src/main/assets/www/
   index.html                               casca da interface
   css/ base.css · components.css · pages.css
-  js/  util · dates · schema · storage · habits · tasks · gamification · calendar · backup · actions   (regras, sem DOM)
+  js/  util · dates · schema · storage · habits · tasks · gamification · calendar · backup · heatmap · actions   (regras, sem DOM)
        icons · views · sheets · app                                                                    (interface)
 tests/            testes automatizados (node:test + jsdom)
 scripts/          verificações estáticas
@@ -40,7 +40,7 @@ Instalar: copie o APK para o celular e permita "instalar apps desconhecidos". **
 ## Desenvolvimento
 ```bash
 npm install        # só para os testes (jsdom)
-npm test           # 57 testes
+npm test           # 64 testes
 npm run check      # verificações estáticas
 python3 scripts/check_manifest.py
 ```

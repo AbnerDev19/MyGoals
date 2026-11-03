@@ -1,7 +1,7 @@
 // Carrega os módulos do app (scripts clássicos) no Node, na mesma ordem do index.html.
 const path = require('path');
 const www = path.join(__dirname, '..', 'app', 'src', 'main', 'assets', 'www', 'js');
-['util', 'dates', 'schema', 'storage', 'habits', 'tasks', 'gamification', 'calendar', 'backup', 'actions'].forEach((m) => require(path.join(www, m + '.js')));
+['util', 'dates', 'schema', 'storage', 'habits', 'tasks', 'gamification', 'calendar', 'backup', 'heatmap', 'actions'].forEach((m) => require(path.join(www, m + '.js')));
 const MG = globalThis.MG;
 
 /** Fixa "agora" (data local) para testes determinísticos. */

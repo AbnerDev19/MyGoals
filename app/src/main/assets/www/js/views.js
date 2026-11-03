@@ -16,9 +16,10 @@
     return '<svg class="ringsvg" viewBox="0 0 36 36" aria-hidden="true"><circle class="trk" cx="18" cy="18" r="15"/>' + (ratio > 0 ? '<circle class="prg" cx="18" cy="18" r="15" stroke-dasharray="' + (c * Math.min(1, ratio)).toFixed(1) + ' ' + c.toFixed(1) + '" transform="rotate(-90 18 18)"/>' : '') + '</svg>';
   };
   const bar = (pct, cls) => '<div class="bar ' + (cls || '') + '" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>';
-  const head = (eyebrow, title, right) => '<header class="page-head"><div>' + (eyebrow ? '<div class="eyebrow cap">' + eyebrow + '</div>' : '') + '<h1>' + title + '</h1></div>' + (right || '') + '</header>';
+  const head = (eyebrow, title, right) => '<header class="page-head"><div>' + (eyebrow ? '<div class="eyebrow">' + eyebrow + '</div>' : '') + '<h1>' + title + '</h1></div>' + (right || '') + '</header>';
   const sectionH = (icon, title, count) => '<div class="section-h"><h2>' + (icon ? I(icon) : '') + title + '</h2>' + (count != null ? '<span class="count">' + count + '</span>' : '') + '</div>';
   const nameOf = (s) => (s.p.name || '').trim();
+  const cap1 = (t) => String(t).charAt(0).toUpperCase() + String(t).slice(1);
   const labelDate = (key) => D.longLabel(D.parse(key));
 
   /* ---------- itens ---------- */
@@ -61,10 +62,10 @@
     const n = C.nextAction(c.s, c.today, D.pad(c.now.getHours()) + ':' + D.pad(c.now.getMinutes()));
     if (!n) return '';
     const isTask = n.kind === 'task';
-    const btn = isTask ? '<button class="btn primary sm" data-a="ttog" data-id="' + esc(n.id) + '">' + I('check') + 'Concluir</button>'
-      : n.goal.type === 'check' ? '<button class="btn primary sm" data-a="htog" data-id="' + esc(n.id) + '" data-d="' + c.today + '">' + I('check') + 'Registrar</button>'
-        : '<button class="btn primary sm" data-a="hinc" data-id="' + esc(n.id) + '" data-d="' + c.today + '">' + I('plus') + 'Adicionar</button>';
-    return '<section class="card next-card" aria-labelledby="nx"><div class="icon-wrap">' + I(isTask ? 'clipboard' : 'repeat') + '</div><div class="grow"><div class="eyebrow" id="nx">Próxima ação · ' + NEXT_LABEL[n.reason] + '</div><div class="title" style="font-weight:700">' + esc(n.title) + '</div>' + (n.time ? '<div class="small muted">' + I('clock') + ' ' + n.time + '</div>' : '') + '</div>' + btn + '</section>';
+    const btn = isTask ? '<button class="btn primary block" data-a="ttog" data-id="' + esc(n.id) + '">' + I('check') + 'Concluir</button>'
+      : n.goal.type === 'check' ? '<button class="btn primary block" data-a="htog" data-id="' + esc(n.id) + '" data-d="' + c.today + '">' + I('check') + 'Registrar</button>'
+        : '<button class="btn primary block" data-a="hinc" data-id="' + esc(n.id) + '" data-d="' + c.today + '">' + I('plus') + 'Adicionar</button>';
+    return '<section class="card next-card" aria-labelledby="nx"><div class="row-flex" style="align-items:flex-start;gap:12px"><div class="icon-wrap">' + I(isTask ? 'clipboard' : 'repeat') + '</div><div class="grow"><div class="eyebrow" id="nx">Próxima ação</div><div class="title" style="font-weight:700;margin-top:2px;overflow-wrap:anywhere">' + esc(n.title) + '</div><div class="meta small muted" style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px"><span class="badge' + (n.reason === 'late' ? ' bad' : n.reason === 'priority' ? ' warn' : '') + '">' + NEXT_LABEL[n.reason] + '</span>' + (n.time ? '<span class="row-flex" style="gap:4px">' + I('clock') + n.time + '</span>' : '') + '</div></div></div>' + btn + '</section>';
   }
 
   /* ---------- HOJE ---------- */
@@ -75,7 +76,7 @@
     const avatar = '<button class="avatar" data-a="tab" data-v="aju" aria-label="Abrir ajustes e perfil"' + (s.p.photo ? ' style="background-image:url(\'' + s.p.photo + '\')"' : '') + '>' + (s.p.photo ? '' : esc((nm || '?')[0].toUpperCase())) + '</button>';
     const mon = D.weekKeys(sel);
     const circ = 2 * Math.PI * 34;
-    let out = head(esc(labelDate(sel)), isToday ? esc(greet + (nm ? ', ' + nm : '')) : esc(D.WEEKDAYS_LONG[D.parse(sel).getDay()].replace(/^./, (x) => x.toUpperCase())), avatar);
+    let out = head(esc(cap1(labelDate(sel))), isToday ? esc(greet + (nm ? ', ' + nm : '')) : esc(D.WEEKDAYS_LONG[D.parse(sel).getDay()].replace(/^./, (x) => x.toUpperCase())), avatar);
     out += '<div class="weeknav"><button class="icon-btn" data-a="selwk" data-v="-7" aria-label="Semana anterior">' + I('chevron-left') + '</button>' + (isToday ? '<span class="small muted">Esta semana</span>' : '<button class="btn ghost sm" data-a="seltoday">Voltar para hoje</button>') + '<button class="icon-btn" data-a="selwk" data-v="7" aria-label="Próxima semana">' + I('chevron-right') + '</button></div>';
     out += '<div class="weekstrip" role="group" aria-label="Dias da semana">' + mon.map((k, i) => '<button data-a="sel" data-d="' + k + '" aria-pressed="' + (k === sel) + '"' + (k === today ? ' class="is-today" aria-label="Hoje, ' + esc(labelDate(k)) + '"' : ' aria-label="' + esc(labelDate(k)) + '"') + '><small>' + D.WEEKDAYS_SHORT[i] + '</small><b>' + D.parse(k).getDate() + '</b></button>').join('') + '</div>';
     out += '<section class="card progress-card' + (sum.allDone ? ' complete' : '') + '" style="margin-top:12px;flex-wrap:wrap" aria-label="Progresso do dia"><div class="ringbig"><svg viewBox="0 0 84 84" aria-hidden="true"><circle class="trk" cx="42" cy="42" r="34"/><circle class="prg" cx="42" cy="42" r="34" stroke-dasharray="' + (circ * sum.pct / 100).toFixed(1) + ' ' + circ.toFixed(1) + '"/></svg><div class="pct">' + (sum.total ? sum.pct + '%' : '—') + '</div></div>' +
@@ -97,20 +98,7 @@
   }
 
   /* ---------- JORNADA ---------- */
-  function heat(c, gl, range) {
-    const today = c.today, y = D.parse(today).getFullYear();
-    const from = range === 'ano' ? D.key(new Date(y, 0, 1)) : D.addKey(today, -89), to = range === 'ano' ? D.key(new Date(y, 11, 31)) : today;
-    const off = D.parse(from).getDay(), keys = D.dayKeysBetween(from, to), cols = Math.ceil((off + keys.length) / 7);
-    let done = 0, avail = 0;
-    let cells = '<i style="visibility:hidden"></i>'.repeat(off);
-    keys.forEach((k) => {
-      let bg;
-      if (k > today) bg = 'var(--fut)'; else if (k < gl.start) bg = 'var(--off)';
-      else { const x = H.dayStatus(c.s, gl, k); avail++; if (x === 1) done++; bg = x === 1 ? 'var(--c)' : x ? 'color-mix(in srgb,var(--c) 45%,var(--off))' : 'var(--off)'; }
-      cells += '<i style="background:' + bg + '"></i>';
-    });
-    return '<div class="heat-wrap"><div class="heat" role="img" aria-label="Mapa de consistência de ' + esc(gl.name) + ': ' + done + ' de ' + avail + ' dias com meta diária cumprida" style="--c:' + gl.color + ';grid-template-columns:repeat(' + cols + ',minmax(6px,1fr))">' + cells + '</div></div>';
-  }
+  const heat = (c, gl, range) => MG.heatmap.render(c, gl, range);
   function missionCard(m) {
     const st = { available: ['Em andamento', ''], ready: ['Pronta para resgatar', 'ok'], claimed: ['Resgatada', 'ok'], expired: ['Expirada', 'bad'] }[m.state];
     return '<article class="card mission ' + m.state + '"><div class="top"><div class="ico">' + I(m.icon) + '</div><div class="grow"><h3>' + esc(m.title) + '</h3><p class="small">' + esc(m.desc) + '</p></div><span class="badge ' + st[1] + '">' + (m.state === 'claimed' ? I('check') : '') + st[0] + '</span></div>' +
@@ -119,7 +107,8 @@
       (m.state === 'expired' ? '<p class="small">O período terminou e esta recompensa não pode mais ser resgatada.</p>' : '') + '</article>';
   }
   function badgeCard(a) {
-    return '<article class="card badge-card ' + (a.unlocked ? 'unlocked' : 'locked') + '"><div class="ico">' + I(a.icon) + '</div><h3>' + esc(a.title) + '</h3><p>' + esc(a.desc) + '</p><div style="margin-top:auto">' + bar(a.pct) + '<div class="row-flex between small muted" style="margin-top:6px"><span>' + (a.unlocked ? 'Desbloqueada' : 'Bloqueada · ' + fmt(a.progress) + '/' + fmt(a.target)) + '</span><b>' + (a.unlocked ? '' : '+' + a.reward + ' XP') + '</b></div></div></article>';
+    return '<article class="card badge-card ' + (a.unlocked ? 'unlocked' : 'locked') + '"><div class="ico">' + I(a.icon) + '</div><h3>' + esc(a.title) + '</h3><p>' + esc(a.desc) + '</p><div class="bc-foot">' + bar(a.pct, a.unlocked ? 'ok' : '') +
+      '<div class="small muted">' + (a.unlocked ? 'Desbloqueada' : 'Bloqueada · ' + fmt(a.progress) + '/' + fmt(a.target)) + '</div><div class="small"><b>' + (a.unlocked ? 'XP recebido' : '+' + a.reward + ' XP') + '</b></div></div></article>';
   }
   function histRow(e) {
     const tag = e.kind === 'reversal' ? '<span class="badge bad">Estorno</span>' : e.kind === 'opening' ? '<span class="badge">Saldo migrado</span>' : e.retro ? '<span class="badge warn">Retroativo</span>' : '';
@@ -130,8 +119,8 @@
     const ach = G.achievements(s, today), got = ach.filter((a) => a.unlocked).length, best = Math.max(s.game.bestStreak || 0, G.longestStreak(days));
     let out = head('Seu progresso, no seu ritmo', 'Jornada');
     out += '<section class="hero" aria-label="Nível e XP"><div class="row-flex between"><span class="eyebrow">Nível ' + lv.level + '</span><span class="badge" style="background:rgba(255,255,255,.2);color:#fff">' + fmt(xp) + ' XP</span></div><h2 style="margin:8px 0 14px">' + esc(lv.title) + '</h2><div class="row-flex between small" style="margin-bottom:8px"><span>Próximo nível</span><b>' + fmt(lv.remaining) + ' XP restantes</b></div>' + bar(lv.pct) +
-      '<div class="stats"><div><b>' + I('flame') + G.currentStreak(days, today) + '</b><span>dias seguidos</span></div><div><b>' + I('trophy') + best + '</b><span>melhor sequência</span></div><div><b>' + I('medal') + got + '/' + ach.length + '</b><span>conquistas</span></div></div></section>';
-    out += '<div class="seg" role="tablist" aria-label="Seções da jornada" style="margin:16px 0">' + [['miss', 'Missões', 'target'], ['conq', 'Conquistas', 'medal'], ['hist', 'Histórico', 'history'], ['evo', 'Evolução', 'trend']].map((x) => '<button role="tab" data-a="jtab" data-v="' + x[0] + '" aria-selected="' + (ui.jtab === x[0]) + '">' + I(x[2]) + '<span class="sr-sm">' + x[1] + '</span></button>').join('') + '</div>';
+      '<div class="stats"><div><b>' + I('flame') + G.currentStreak(days, today) + '</b><span>sequência</span></div><div><b>' + I('trophy') + best + '</b><span>recorde</span></div><div><b>' + I('medal') + got + '/' + ach.length + '</b><span>conquistas</span></div></div></section>';
+    out += '<div class="seg tabs" role="tablist" aria-label="Seções da jornada" style="margin:16px 0">' + [['miss', 'Missões', 'target'], ['conq', 'Conquistas', 'medal'], ['hist', 'Histórico', 'history'], ['evo', 'Evolução', 'trend']].map((x) => '<button role="tab" data-a="jtab" data-v="' + x[0] + '" aria-selected="' + (ui.jtab === x[0]) + '">' + I(x[2]) + '<span>' + x[1] + '</span></button>').join('') + '</div>';
     if (ui.jtab === 'miss') {
       const ms = G.missions(s, today), by = (t, p) => ms.filter((m) => m.type === t && m.period === p);
       out += sectionH(null, 'Missões de hoje', by('daily', 'current').filter((m) => m.state === 'claimed').length + '/' + by('daily', 'current').length) + '<div class="list">' + by('daily', 'current').map(missionCard).join('') + '</div>';
@@ -145,8 +134,9 @@
       const all = G.history(s.game, 1000), shown = all.slice(0, ui.histN);
       out += '<p class="small" style="margin-bottom:8px">Cada ganho e cada estorno fica registrado. Desfazer uma ação cria um lançamento negativo; nada é apagado.</p>' + (all.length ? '<div class="card">' + shown.map(histRow).join('') + '</div>' + (all.length > shown.length ? '<button class="btn block" style="margin-top:12px" data-a="histmore">Ver mais</button>' : '') : '<div class="empty"><div>' + I('history') + '</div><h2>Nenhum XP ainda</h2><p>Conclua um hábito ou tarefa para ver o histórico aqui.</p></div>');
     } else {
-      out += '<div class="seg" style="margin-bottom:12px" role="group" aria-label="Período">' + [['ano', 'Ano'], ['90', '90 dias']].map((x) => '<button data-a="rg" data-v="' + x[0] + '" aria-pressed="' + (ui.rg === x[0]) + '">' + x[1] + '</button>').join('') + '</div>';
-      out += s.goals.length ? '<div class="list">' + s.goals.map((gl) => { const st = H.stats(s, gl, today); return '<button class="card" style="text-align:left" data-a="hdet" data-id="' + esc(gl.id) + '"><div class="row-flex between"><h3>' + (gl.emoji ? esc(gl.emoji) + ' ' : '') + esc(gl.name) + '</h3><span class="badge">' + st.pct + '%</span></div>' + heat(c, gl, ui.rg) + '</button>'; }).join('') + '</div>' : '<div class="empty"><div>' + I('trend') + '</div><h2>Sua evolução começa aqui</h2><p>Crie um hábito e registre o primeiro progresso.</p></div>';
+      out += '<div class="seg" style="margin-bottom:12px" role="group" aria-label="Período do mapa">' + [['12m', '12 meses'], ['6m', '6 meses'], ['3m', '3 meses']].map((x) => '<button data-a="rg" data-v="' + x[0] + '" aria-pressed="' + (ui.rg === x[0]) + '">' + x[1] + '</button>').join('') + '</div>';
+      out += '<article class="card" style="margin-bottom:10px"><h3 style="margin-bottom:10px">Visão geral</h3>' + heat(c, null, ui.rg) + '</article>';
+      out += s.goals.length ? '<div class="list">' + s.goals.map((gl) => { const st = H.stats(s, gl, today); return '<article class="card"><div class="row-flex between"><button class="grow link-title" data-a="hdet" data-id="' + esc(gl.id) + '" aria-label="Abrir detalhes de ' + esc(gl.name) + '"><h3>' + (gl.emoji ? esc(gl.emoji) + ' ' : '') + esc(gl.name) + '</h3></button><span class="badge">' + st.pct + '%</span></div>' + heat(c, gl, ui.rg) + '</article>'; }).join('') + '</div>' : '<div class="empty"><div>' + I('trend') + '</div><h2>Sua evolução começa aqui</h2><p>Crie um hábito e registre o primeiro progresso.</p></div>';
     }
     return out;
   }
@@ -158,12 +148,12 @@
   function agenda(c) {
     const { s, ui, today } = c, wk = ui.awk, days = D.weekKeys(wk), mid = D.parse(days[3]);
     let out = head(null, 'Agenda');
-    out += '<div class="row-flex between" style="margin-bottom:8px"><button class="icon-btn bordered" data-a="awk" data-v="-7" aria-label="Semana anterior">' + I('chevron-left') + '</button><div style="text-align:center"><div style="font-weight:700" class="cap">' + mid.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) + '</div><button class="btn ghost sm" data-a="atoday">Ir para hoje</button></div><button class="icon-btn bordered" data-a="awk" data-v="7" aria-label="Próxima semana">' + I('chevron-right') + '</button></div>';
+    out += '<div class="row-flex between" style="margin-bottom:8px"><button class="icon-btn bordered" data-a="awk" data-v="-7" aria-label="Semana anterior">' + I('chevron-left') + '</button><div style="text-align:center"><div style="font-weight:700">' + cap1(mid.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })) + '</div><button class="btn ghost sm" data-a="atoday">Ir para hoje</button></div><button class="icon-btn bordered" data-a="awk" data-v="7" aria-label="Próxima semana">' + I('chevron-right') + '</button></div>';
     out += '<div class="seg" role="group" aria-label="Modo de visualização" style="margin-bottom:12px"><button data-a="aview" data-v="dia" aria-pressed="' + (ui.aview === 'dia') + '">' + I('list') + 'Dia</button><button data-a="aview" data-v="semana" aria-pressed="' + (ui.aview === 'semana') + '">' + I('grid') + 'Semana</button></div>';
     if (ui.aview === 'dia') {
       out += '<div class="weekstrip" role="group" aria-label="Dias da semana">' + days.map((k, i) => '<button data-a="aday" data-d="' + k + '" aria-pressed="' + (k === ui.asel) + '"' + (k === today ? ' class="is-today"' : '') + ' aria-label="' + esc(labelDate(k)) + '"><small>' + D.WEEKDAYS_SHORT[i] + '</small><b>' + D.parse(k).getDate() + '</b></button>').join('') + '</div>';
       const ad = C.agendaDay(s, ui.asel, today);
-      out += '<h2 style="margin:16px 0 8px" class="cap">' + esc(labelDate(ui.asel)) + '</h2>';
+      out += '<h2 style="margin:16px 0 8px">' + esc(cap1(labelDate(ui.asel))) + '</h2>';
       if (!ad.count) return out + '<div class="empty"><div>' + I('calendar') + '</div><h2>Dia sem compromissos</h2><p>Use + para adicionar uma tarefa com horário ou um hábito.</p></div>';
       if (ad.timed.length) out += sectionH('clock', 'Com horário', ad.timed.length) + '<div class="list">' + ad.timed.map((it) => agendaItem(c, it, ui.asel)).join('') + '</div>';
       if (ad.untimed.length) out += sectionH('clipboard', 'Sem horário', ad.untimed.length) + '<div class="list">' + ad.untimed.map((it) => agendaItem(c, it, ui.asel)).join('') + '</div>';
@@ -213,7 +203,7 @@
       '<p class="small" style="margin-top:10px">Registros de dias anteriores rendem metade. Desfazer uma ação estorna o XP dela (fica no histórico). Limites diários: ' + R.caps.habit + ' hábitos, ' + R.caps.task + ' tarefas e ' + R.caps.note + ' notas. Missões e conquistas já resgatadas não são desfeitas.</p></section>';
     out += '<section class="card setting"><h2>Backup</h2><p>Seus dados ficam só neste aparelho. Exporte um backup para guardar ou levar para outro aparelho.</p><div class="stack"><button class="btn block" data-a="export">' + I('download') + 'Exportar para arquivo</button><button class="btn block" data-a="copy">' + I('copy') + 'Copiar backup</button><button class="btn block" data-a="importopen">' + I('upload') + 'Importar backup</button></div></section>';
     out += '<section class="card setting"><h2>Dados</h2><div class="kv"><span>Hábitos</span><b>' + s.goals.length + '</b></div><div class="kv"><span>Tarefas</span><b>' + s.tasks.length + '</b></div><div class="kv"><span>Notas</span><b>' + s.notes.length + '</b></div><div class="stack" style="margin-top:14px">' + (snap ? '<button class="btn block" data-a="restoresnap">' + I('undo') + 'Restaurar cópia anterior</button>' : '') + '<button class="btn block danger" data-a="sample">Carregar dados de exemplo</button><button class="btn block danger" data-a="clear">' + I('trash') + 'Começar do zero</button></div><p class="small" style="margin-top:10px">Antes de substituir ou apagar, o app guarda uma cópia automática do que existia (uma única, a mais recente).</p></section>';
-    out += '<section class="card setting"><h2>Privacidade</h2><p>' + I('lock') + ' O MyGoals funciona offline, sem conta e sem enviar nada pela internet. Ficam armazenados neste aparelho: perfil (nome e foto), hábitos e registros, tarefas, notas e histórico de XP. Limpar os dados do app ou desinstalá-lo apaga tudo, a menos que você tenha um backup.</p><p class="small" style="margin-top:8px">Versão ' + esc(MG.VERSION || '') + ' · formato de dados ' + MG.schema.SCHEMA_VERSION + '</p></section>';
+    out += '<section class="card setting"><h2>Privacidade</h2><div class="row-flex" style="align-items:flex-start;gap:10px"><span style="color:var(--ac);margin-top:2px">' + I('lock') + '</span><p>O MyGoals funciona offline, sem conta e sem enviar nada pela internet. Ficam armazenados neste aparelho: perfil (nome e foto), hábitos e registros, tarefas, notas e histórico de XP. Limpar os dados do app ou desinstalá-lo apaga tudo, a menos que você tenha um backup.</p></div><p class="small" style="margin-top:10px">Versão ' + esc(MG.VERSION || '') + ' · formato de dados ' + MG.schema.SCHEMA_VERSION + '</p></section>';
     return out;
   }
 

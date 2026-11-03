@@ -12,7 +12,7 @@
   const adapter = ST.browserAdapter();
   const loaded = ST.load(adapter);
   let S = loaded.state;
-  const ui = { tab: 'hoje', sel: D.todayKey(), asel: D.todayKey(), awk: D.weekStartKey(D.todayKey()), aview: g.innerWidth < 600 ? 'dia' : 'semana', jtab: 'miss', achf: 'all', histN: 30, rg: 'ano', q: '', tg: '', ov: null, day: D.todayKey(), banners: [] };
+  const ui = { tab: 'hoje', sel: D.todayKey(), asel: D.todayKey(), awk: D.weekStartKey(D.todayKey()), aview: g.innerWidth < 600 ? 'dia' : 'semana', jtab: 'miss', achf: 'all', histN: 30, rg: '12m', q: '', tg: '', ov: null, day: D.todayKey(), banners: [] };
   let lastFocus = null, toastTimer = null, nameTimer = null, saveFailed = false;
 
   const ctx = () => ({ s: S, ui, today: D.todayKey(), now: D.now() });
@@ -61,7 +61,10 @@
     $('fabbox').innerHTML = fab;
     renderOverlay(c);
     restoreFocus(focus);
+    scrollHeatToEnd();
   }
+  /** O mapa abre mostrando o período mais recente (como no GitHub). */
+  function scrollHeatToEnd() { document.querySelectorAll('.gh-scroll').forEach((el) => { el.scrollLeft = el.scrollWidth; }); }
   function renderOverlay(c) {
     const box = $('overlay'), open = !!ui.ov;
     const had = box.innerHTML !== '';
@@ -280,6 +283,12 @@
     if (!fn) return;
     if (ui.ov && ui.ov.k === 'note' && !['npin', 'ncol', 'nsave', 'ndelask', 'scrim'].includes(el.dataset.a)) syncNote();
     fn(el, ev);
+  });
+  document.addEventListener('click', (ev) => {
+    const cell = ev.target.closest && ev.target.closest('.gh-cells i[data-tip]');
+    if (!cell) return;
+    const tip = cell.closest('.gh').querySelector('.gh-tip');
+    tip.textContent = tip.textContent === cell.dataset.tip ? tip.dataset.default : cell.dataset.tip;
   });
   document.addEventListener('input', (ev) => {
     const t = ev.target;

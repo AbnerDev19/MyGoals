@@ -18,8 +18,7 @@
 
 .chip{ display:inline-flex; align-items:center; gap:6px; min-height:40px; padding:0 14px; border-radius:999px; border:1px solid var(--ln); background:var(--sf); font-size:.875rem; font-weight:600; white-space:nowrap; }
 .chip[aria-pressed="true"],.chip.on{ background:var(--ac); color:var(--ac-ink); border-color:var(--ac); }
-.chips{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 6px; scrollbar-width:none; }
-.chips::-webkit-scrollbar{ display:none; }
+.chips{ display:flex; flex-wrap:wrap; gap:8px; padding:2px 0 6px; }
 .tag{ display:inline-flex; align-items:center; gap:4px; font-size:.75rem; font-weight:600; padding:3px 8px; border-radius:8px; background:var(--sf2); color:var(--tx); }
 .badge{ display:inline-flex; align-items:center; gap:4px; font-size:.75rem; font-weight:700; padding:3px 8px; border-radius:8px; background:var(--sf2); color:var(--tx); white-space:nowrap; }
 .badge .ic{ width:.875rem; height:.875rem; }
@@ -29,8 +28,8 @@
 .bar>i{ display:block; height:100%; border-radius:99px; background:var(--ac); transition:width .3s; }
 .bar.ok>i{ background:var(--ok); }
 
-.seg{ display:flex; gap:4px; padding:4px; background:var(--sf2); border-radius:var(--r-m); }
-.seg button{ flex:1; min-height:44px; padding:0 8px; border-radius:11px; font-weight:650; font-size:.875rem; color:var(--tx2); display:flex; align-items:center; justify-content:center; gap:6px; }
+.seg{ display:flex; gap:4px; padding:4px; background:var(--sf2); border-radius:var(--r-m); max-width:100%; min-width:0; }
+.seg button{ flex:1 1 0; min-width:0; min-height:44px; padding:0 6px; white-space:nowrap; border-radius:11px; font-weight:650; font-size:.875rem; color:var(--tx2); display:flex; align-items:center; justify-content:center; gap:6px; }
 .seg button[aria-pressed="true"],.seg button[aria-selected="true"]{ background:var(--sf); color:var(--tx); box-shadow:0 1px 3px rgba(0,0,0,.12); font-weight:750; }
 
 /* Linhas de hábito e tarefa: hábito = anel de progresso + faixa colorida; tarefa = caixa quadrada */
@@ -57,7 +56,7 @@
 .step:active{ background:var(--sf2); }
 .list{ display:flex; flex-direction:column; gap:8px; }
 
-.section-h{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin:22px 0 10px; }
+.section-h{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin:22px 0 10px; }
 .section-h:first-child{ margin-top:0; }
 .section-h h2{ display:flex; align-items:center; gap:8px; }
 .count{ font-size:.8125rem; font-weight:700; color:var(--tx2); }
@@ -117,3 +116,6 @@ details.fold>.list{ padding:0 8px 8px; }
 #nv .ic{ width:1.375rem; height:1.375rem; }
 .fab{ position:fixed; z-index:19; right:max(16px,calc(50% - 264px)); bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0)); height:56px; min-width:56px; padding:0 18px 0 14px; border-radius:18px; background:var(--ac); color:var(--ac-ink); display:flex; align-items:center; gap:8px; font-weight:700; box-shadow:0 8px 20px rgba(0,0,0,.22); }
 .fab .ic{ width:1.5rem; height:1.5rem; stroke-width:2.2; }
+
+/* Abas com 4 itens: em telas estreitas ficam só com texto para caber sem estourar a largura */
+@media (max-width:440px){ .seg.tabs .ic{ display:none; } .seg button{ font-size:.8125rem; } }

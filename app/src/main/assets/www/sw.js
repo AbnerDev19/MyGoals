@@ -1,5 +1,5 @@
 const CACHE = 'mygoals-shell-v3';
-const ASSETS = ['./', './index.html', './css/base.css', './css/components.css', './css/pages.css', './js/util.js', './js/dates.js', './js/icons.js', './js/schema.js', './js/storage.js', './js/habits.js', './js/tasks.js', './js/gamification.js', './js/calendar.js', './js/backup.js', './js/actions.js', './js/views.js', './js/sheets.js', './js/app.js', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
+const ASSETS = ['./', './index.html', './css/base.css', './css/components.css', './css/pages.css', './js/util.js', './js/dates.js', './js/icons.js', './js/schema.js', './js/storage.js', './js/habits.js', './js/tasks.js', './js/gamification.js', './js/calendar.js', './js/backup.js', './js/heatmap.js', './js/actions.js', './js/views.js', './js/sheets.js', './js/app.js', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

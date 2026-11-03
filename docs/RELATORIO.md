@@ -32,7 +32,7 @@ O `index.html` original (v2) não foi mantido no pacote; todos os dados e funç�
 | Baixo | Sem `adjustResize`/ciclo de vida/barras do sistema no escuro | Implementados |
 
 ## 4. Melhorias visuais
-Design tokens e tema claro/escuro; ícones SVG (sem emoji funcional); Hoje reorganizada (saudação, progresso, próxima ação,
+Design tokens e tema claro/escuro; ícones SVG (sem emoji funcional); mapa de progresso estilo GitHub (meses, dias da semana, legenda, 12/6/3 meses, geral e por hábito); Hoje reorganizada (saudação, progresso, próxima ação,
 tarefas/hábitos/metas, concluídos recolhidos, estado "tudo em dia"); hábitos (anel + faixa colorida) × tarefas (caixa quadrada,
 prioridade e atraso em texto); edição de hábitos e tarefas; agenda com visão diária em lista e grade semanal; Jornada com
 nível, missões por estado (inclui expiradas), conquistas com critério, histórico de XP e mapa de evolução; diário com busca e etiquetas;
@@ -43,7 +43,7 @@ Ver `docs/GAMIFICACAO.md`. Valores de XP **mantidos**; adicionados: estorno com 
 bônus de retomada, melhor sequência persistente, expiração de missões, sequência derivada dos dados.
 
 ## 6. Testes executados (resultado real)
-- `npm test`: **57 testes, 57 aprovados, 0 falhas** (datas, hábitos, XP/níveis, tarefas, missões, sequências, duplicação,
+- `npm test`: **64 testes, 64 aprovados, 0 falhas** (datas, hábitos, XP/níveis, tarefas, missões, sequências, duplicação,
   backup inválido/válido, migração v2→v3, armazenamento cheio/corrompido, e 14 testes de interface em jsdom).
 - `node scripts/static-check.js`: OK. `python3 scripts/check_manifest.py`: OK (e detecta o erro original, testado por mutação).
 - `javac --release 17` de `MainActivity.java` contra `android.jar` (API 33): **0 erros** (apenas avisos de APIs depreciadas).
@@ -54,8 +54,9 @@ O workflow foi validado só quanto à sintaxe YAML. A primeira execução real s
 
 ## 8. Pendências / não verificado
 - Build Gradle, `lintDebug` e instalação do APK.
-- Aparência real: a interface foi testada por estrutura (jsdom), **não foi vista em tela**; layout, contraste (valores escolhidos, não medidos),
-  toque, teclado virtual, TalkBack, exportação para arquivo e seletor de arquivos precisam de teste manual em aparelho.
+- Aparência: a interface foi vista em Chromium headless (390 px de largura, tema claro e escuro) e as telas foram corrigidas a partir
+  dos prints (aba da Jornada que estourava a largura, mapa de progresso, cartões desalinhados). **Isso não é o WebView do Android**:
+  confira no aparelho layout, toque, teclado virtual, TalkBack, contraste medido, exportação para arquivo e seletor de arquivos.
 - Sem testes instrumentados Android (Espresso).
 - Valores de XP não foram "balanceados" com dados de uso real, só estimados.
 

@@ -69,8 +69,8 @@
     const rule = gl.type === 'check' ? 'Sim ou não, por dia' : fmt(gl.target) + ' ' + esc(gl.unit) + (gl.type === 'weekly' ? ' por semana' : ' por dia');
     return '<div class="fullpage" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><div class="page"><div class="topbar"><button class="icon-btn" data-a="close" aria-label="Voltar">' + I('chevron-left') + '</button><button class="btn sm" data-a="hedit" data-id="' + esc(gl.id) + '">' + I('edit') + 'Editar</button></div>' +
       '<div class="eyebrow">' + rule + '</div><h1 id="dlg-t" style="margin:4px 0 16px">' + (gl.emoji ? esc(gl.emoji) + ' ' : '') + esc(gl.name) + '</h1>' +
-      '<div class="row-flex" style="gap:8px;margin-bottom:16px">' + [[st.current + ' ' + u, 'Sequência atual', 'flame'], [st.best + ' ' + u, 'Melhor sequência', 'trophy'], [st.pct + '%', 'Conclusão', 'target']].map((x) => '<div class="card flat grow" style="padding:12px;text-align:center"><div style="font-weight:800;font-size:1.125rem">' + x[0] + '</div><div class="small muted">' + x[1] + '</div></div>').join('') + '</div>' +
-      '<h2 style="margin-bottom:6px">Ano atual</h2>' + V.heat(c, gl, 'ano') + '<p class="small muted" style="margin-top:8px">Início do hábito: ' + gl.start.split('-').reverse().join('/') + '.' + (gl.type === 'weekly' ? ' Em metas semanais, desmarcar remove só o registro do dia escolhido.' : '') + '</p></div></div>';
+      '<div class="stat-grid">' + [[st.current + ' ' + u, 'Sequência atual'], [st.best + ' ' + u, 'Melhor sequência'], [st.pct + '%', 'Conclusão']].map((x) => '<div class="card flat stat"><div class="stat-v">' + x[0] + '</div><div class="small muted">' + x[1] + '</div></div>').join('') + '</div>' +
+      '<h2 style="margin-bottom:8px">Últimos 12 meses</h2><div class="card flat">' + V.heat(c, gl, '12m') + '</div>' + '<p class="small muted" style="margin-top:8px">Início do hábito: ' + gl.start.split('-').reverse().join('/') + '.' + (gl.type === 'weekly' ? ' Em metas semanais, desmarcar remove só o registro do dia escolhido.' : '') + '</p></div></div>';
   }
 
   function noteEditor(c, ov) {
